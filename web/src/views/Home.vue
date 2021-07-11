@@ -92,14 +92,7 @@ for (let i = 0; i < 23; i++) {
 export default defineComponent({
   name: 'Home',
   setup() {
-    console.log("setup")
     const ebooks = ref()
-    const pagination = {
-      onChange: (page: number) => {
-        console.log(page);
-      },
-      pageSize: 3,
-    };
     const actions: Record<string, string>[] = [
       { type: 'StarOutlined', text: '156' },
       { type: 'LikeOutlined', text: '156' },
@@ -107,18 +100,15 @@ export default defineComponent({
     ];
 
     onMounted(() => {
-      console.log("onMounted")
       axios.get("/ebook/list").then((resp) => {
         const data = resp.data
         ebooks.value = data.content
-        console.log(resp)
       })
     })
 
     return {
       ebooks,
       listData,
-      pagination,
       actions
       // pagination : {
       //   onChange: (page: any) => {
