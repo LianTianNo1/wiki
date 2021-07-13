@@ -9,6 +9,8 @@ import com.xxxx.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * Created by stfu
  * 2021-07-08 16:32
@@ -21,7 +23,7 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/list")
-    public CommonResp list(EbookQueryReq req) {
+    public CommonResp list(@Valid EbookQueryReq req) {
         PageResp<EbookQueryResp> list = ebookService.list(req);
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
     resp.setContent(list);
