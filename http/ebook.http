@@ -1,3 +1,10 @@
 GET http://localhost:8880/ebook/list?page=4&size=1
 
 ###
+
+POST http://localhost:8880/ebook/save
+Content-Type: application/json
+
+{}
+
+###
