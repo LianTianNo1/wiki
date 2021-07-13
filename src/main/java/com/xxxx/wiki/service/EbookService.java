@@ -7,6 +7,7 @@ import com.xxxx.wiki.domain.EbookExample;
 import com.xxxx.wiki.mapper.EbookMapper;
 import com.xxxx.wiki.req.EbookReq;
 import com.xxxx.wiki.resp.EbookResp;
+import com.xxxx.wiki.resp.PageResp;
 import com.xxxx.wiki.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class EbookService {
     @Autowired(required = false)
     private EbookMapper ebookMapper;
 
-    public List<EbookResp> list(EbookReq req) {
+    public PageResp<EbookResp> list(EbookReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())) {
@@ -36,7 +37,7 @@ public class EbookService {
         }
         // PageHelper分页插件
         // 这句话这对第一个遇到的select起作用
-        PageHelper.startPage(1,3);
+        PageHelper.startPage(req.getPage(),req.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
         PageInfo<Ebook> pageInfo = new PageInfo<>(ebookList);
@@ -56,8 +57,13 @@ public class EbookService {
 //
 //        上面这段代码可以用下面这段代码代替
 
+        // 列表复制
         List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
 
-        return respList;
+        PageResp<EbookResp> pageResp = new PageResp<>();
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(respList);
+
+        return pageResp;
     }
 }

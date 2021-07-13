@@ -91,7 +91,7 @@
         axios.get("/ebook/list", params).then((response) => {
           loading.value = false;
           const data = response.data;
-          ebooks.value = data.content;
+          ebooks.value = data.content.list;
 
           // 重置分页按钮
           pagination.value.current = params.page;
