@@ -33,7 +33,14 @@ public class EbookController {
     @PostMapping("/save")
     public CommonResp save(@RequestBody @Valid EbookSaveReq req) {
         ebookService.save(req);
-        CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
+        CommonResp resp = new CommonResp<>();
+        return resp;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResp delete(@PathVariable Long id) {
+        ebookService.delete(id);
+        CommonResp resp = new CommonResp<>();
         return resp;
     }
 }
