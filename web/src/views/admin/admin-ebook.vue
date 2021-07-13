@@ -214,7 +214,8 @@
       /**
        * 删除
        */
-      const handleDelete = (id: number) => {
+      const handleDelete = (id: string) => {
+        console.log('==========================' + id)
         axios.delete("/ebook/delete/" + id).then((resp) => {
           const data = resp.data
           if (data.success) {
