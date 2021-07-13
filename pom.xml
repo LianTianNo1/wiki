@@ -54,6 +54,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.70</version>
         </dependency>
+        <!-- pageHelper 插件-->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.13</version>
+        </dependency>
         <!-- lombok 依赖-->
 <!--        <dependency>-->
 <!--            <groupId>org.projectlombok</groupId>-->

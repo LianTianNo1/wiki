@@ -95,7 +95,6 @@
 
           // 重置分页按钮
           pagination.value.current = params.page;
-          console.log(ebooks)
         });
       };
 
