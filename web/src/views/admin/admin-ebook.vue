@@ -93,9 +93,9 @@
             page: params.page,
             size: params.size
           }
-        }).then((response) => {
+        }).then((resp) => {
           loading.value = false;
-          const data = response.data;
+          const data = resp.data;
           ebooks.value = data.content.list;
 
           // 重置分页按钮
