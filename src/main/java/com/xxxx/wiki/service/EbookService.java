@@ -45,6 +45,9 @@ public class EbookService {
         if (!ObjectUtils.isEmpty(req.getName())) {
             criteria.andNameLike("%" + req.getName() + "%");
         }
+        if (!ObjectUtils.isEmpty(req.getCategory2Id())) {
+            criteria.andCategory2IdEqualTo(req.getCategory2Id());
+        }
         // PageHelper分页插件
         // 这句话这对第一个遇到的select起作用
         PageHelper.startPage(req.getPage(),req.getSize());
