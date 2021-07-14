@@ -20,7 +20,7 @@
       <a-table
         :columns="columns"
         :row-key="record => record.id"
-        :data-source="categories"
+        :data-source="level1"
         :loading="loading"
         :pagination="false"
       >
@@ -105,6 +105,7 @@
       /**
        * 数据查询
        **/
+      const level1 = ref()
       const handleQuery = () => {
         loading.value = true;
         axios.get("/category/all").then((resp) => {
@@ -112,6 +113,9 @@
           const data = resp.data;
           if (data.success) {
             categories.value = data.content;
+            level1.value = []
+            level1.value = Tool.array2Tree(categories.value, 0)
+            console.log(level1.value)
           } else {
             message.error(data.message);
           }
@@ -172,7 +176,8 @@
       });
 
       return {
-        categories,
+        //categories,
+        level1,
         columns,
         loading,
         param,
