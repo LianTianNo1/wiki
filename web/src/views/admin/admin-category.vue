@@ -116,7 +116,7 @@
       ];
 
       /**
-       * 数据查询
+       * 查询所有分类
        **/
       const level1 = ref()
       const handleQuery = () => {
@@ -131,8 +131,8 @@
           } else {
             message.error(data.message);
           }
-        });
-      };
+        })
+      }
 
       // ---------- 表单 -----------
       const category = ref({})

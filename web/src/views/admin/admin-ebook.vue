@@ -64,11 +64,11 @@
       <a-form-item label="名称">
         <a-input v-model:value="ebook.name" />
       </a-form-item>
-      <a-form-item label="分类一">
-        <a-input v-model:value="ebook.category1Id" />
-      </a-form-item>
-      <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id" />
+      <a-form-item label="分类">
+          <a-cascader v-model:value="categoryIds"
+                      :field-names="{ label: 'name', value: 'id', children: 'children' }"
+                      @change="searchCascader"
+                      :options="level1" />
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="textarea" />
@@ -162,6 +162,25 @@
       };
 
       /**
+       * 查询所有分类
+       **/
+      const level1 = ref()
+      const handleQueryCategory = () => {
+        loading.value = true
+        axios.get("/category/all").then((resp) => {
+          loading.value = false
+          const data = resp.data
+          if (data.success) {
+            const categories = data.content
+            level1.value = []
+            level1.value = Tool.array2Tree(categories, 0)
+          } else {
+            message.error(data.message);
+          }
+        })
+      }
+
+      /**
        * 表格点击页码时触发
        */
       const handleTableChange = (pagination: any) => {
@@ -173,11 +192,14 @@
       };
 
       // ---------- 表单 -----------
-      const ebook = ref({})
+      const categoryIds = ref()
+      const ebook = ref()
       const modalVisible = ref(false)
       const modalLoading = ref(false)
       const handleModalOk = () => {
         modalLoading.value = true
+        ebook.value.category1Id = categoryIds.value[0]
+        ebook.value.category2Id = categoryIds.value[1]
         axios.post("/ebook/save", ebook.value).then((resp) => {
           modalLoading.value = false
           const data = resp.data
@@ -201,6 +223,8 @@
       const edit = (record: any) => {
         modalVisible.value = true
         ebook.value = Tool.copy(record)
+        categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
+        console.log('=========' + categoryIds.value)
       }
 
       /**
@@ -228,21 +252,29 @@
         })
       }
 
+      const searchCascader = () => {
+        console.log('=========' + categoryIds.value)
+      }
+
       onMounted(() => {
+        handleQueryCategory()
         handleQuery({
           page: 1,
           size: pagination.value.pageSize
-        });
-      });
+        })
+      })
 
       return {
         ebooks,
+        categoryIds,
         pagination,
         columns,
         loading,
         param,
+        level1,
         handleTableChange,
         handleQuery,
+        handleQueryCategory,
 
         ebook,
         modalVisible,
@@ -250,7 +282,9 @@
         edit,
         add,
         handleModalOk,
-        handleDelete
+        handleDelete,
+
+        searchCascader
       }
     }
   });
