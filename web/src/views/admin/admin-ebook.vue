@@ -31,6 +31,9 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
+        <template v-slot:category="{ text, record }">
+          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
+        </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
             <a-button type="primary" @click="edit(record)">
@@ -107,14 +110,8 @@
           dataIndex: 'name'
         },
         {
-          title: '分类一',
-          key: 'category1Id',
-          dataIndex: 'category1Id'
-        },
-        {
-          title: '分类二',
-          key: 'category2Id',
-          dataIndex: 'category2Id'
+          title: '分类',
+          slots: { customRender: 'category' }
         },
         {
           title: '文档数',
@@ -165,19 +162,33 @@
        * 查询所有分类
        **/
       const level1 = ref()
+      let categories: any
       const handleQueryCategory = () => {
         loading.value = true
         axios.get("/category/all").then((resp) => {
           loading.value = false
           const data = resp.data
           if (data.success) {
-            const categories = data.content
+            categories = data.content
             level1.value = []
             level1.value = Tool.array2Tree(categories, 0)
           } else {
             message.error(data.message);
           }
         })
+      }
+
+      const getCategoryName = (cid: number) => {
+        let result = ""
+        if (cid !== null) {
+          categories.forEach((item: any) => {
+            //  后端为了前端不丢失Long类型精度，把id以String类型返回给前端，所以id是String
+            if (item.id === cid.toString()) {
+              result = item.name
+            }
+          })
+        }
+        return result
       }
 
       /**
@@ -198,8 +209,10 @@
       const modalLoading = ref(false)
       const handleModalOk = () => {
         modalLoading.value = true
-        ebook.value.category1Id = categoryIds.value[0]
-        ebook.value.category2Id = categoryIds.value[1]
+        if (categoryIds.value !== undefined) {
+          ebook.value.category1Id = categoryIds.value[0]
+          ebook.value.category2Id = categoryIds.value[1]
+        }
         axios.post("/ebook/save", ebook.value).then((resp) => {
           modalLoading.value = false
           const data = resp.data
@@ -223,8 +236,13 @@
       const edit = (record: any) => {
         modalVisible.value = true
         ebook.value = Tool.copy(record)
-        categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
-        console.log('=========' + categoryIds.value)
+        // 解决级联选择器数据初始渲染问题
+        // category1Id为int，后端给前端的id是String
+        if (ebook.value.category1Id !== null) {
+          categoryIds.value = [ebook.value.category1Id.toString(), ebook.value.category2Id.toString()]
+        }
+        // categoryIds.value = [ebook.value.category1Id.toString(), ebook.value.category2Id.toString()]
+        console.log('categoryIds.value ===== ' + categoryIds.value)
       }
 
       /**
@@ -275,6 +293,7 @@
         handleTableChange,
         handleQuery,
         handleQueryCategory,
+        getCategoryName,
 
         ebook,
         modalVisible,
