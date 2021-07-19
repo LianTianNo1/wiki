@@ -6,9 +6,9 @@ import com.xxxx.wiki.resp.CategoryQueryResp;
 import com.xxxx.wiki.resp.CommonResp;
 import com.xxxx.wiki.resp.PageResp;
 import com.xxxx.wiki.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    @Autowired
+    @Resource
     private CategoryService categoryService;
 
     @GetMapping("/all")

@@ -6,9 +6,9 @@ import com.xxxx.wiki.resp.CommonResp;
 import com.xxxx.wiki.resp.DocQueryResp;
 import com.xxxx.wiki.resp.PageResp;
 import com.xxxx.wiki.service.DocService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/doc")
 public class DocController {
 
-    @Autowired
+    @Resource
     private DocService docService;
 
     @GetMapping("/all")

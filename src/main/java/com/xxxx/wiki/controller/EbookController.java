@@ -6,9 +6,9 @@ import com.xxxx.wiki.resp.CommonResp;
 import com.xxxx.wiki.resp.EbookQueryResp;
 import com.xxxx.wiki.resp.PageResp;
 import com.xxxx.wiki.service.EbookService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 /**
@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @RequestMapping("/ebook")
 public class EbookController {
 
-    @Autowired
+    @Resource
     private EbookService ebookService;
 
     @GetMapping("/list")

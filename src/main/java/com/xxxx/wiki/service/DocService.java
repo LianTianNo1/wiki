@@ -2,8 +2,10 @@ package com.xxxx.wiki.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xxxx.wiki.domain.Content;
 import com.xxxx.wiki.domain.Doc;
 import com.xxxx.wiki.domain.DocExample;
+import com.xxxx.wiki.mapper.ContentMapper;
 import com.xxxx.wiki.mapper.DocMapper;
 import com.xxxx.wiki.req.DocQueryReq;
 import com.xxxx.wiki.req.DocSaveReq;
@@ -13,10 +15,10 @@ import com.xxxx.wiki.util.CopyUtil;
 import com.xxxx.wiki.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,10 +30,13 @@ public class DocService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocService.class);
 
-    @Autowired(required = false)
+    @Resource
     private DocMapper docMapper;
 
-    @Autowired
+    @Resource
+    private ContentMapper contentMapper;
+
+    @Resource
     private SnowFlake snowFlake;
 
     /**
@@ -81,13 +86,25 @@ public class DocService {
      */
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
+        // 只会copy名字对应的字段，比如这个是content字段与id字段
+        Content content = CopyUtil.copy(req, Content.class);
         if (ObjectUtils.isEmpty(req.getId())) {
             // 新增
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
+
+            //为了保持与上面的id一致，所以doc.getId()
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         } else {
             // 更新
             docMapper.updateByPrimaryKey(doc);
+            // 带上大字段的用法
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            // 更新文档时可能它的content为空，用上面的根据id更新就会失败
+            if (count == 0) {
+                contentMapper.insert(content);
+            }
         }
     }
 

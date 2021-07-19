@@ -148,10 +148,14 @@
       // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
       const treeSelectData = ref()
       treeSelectData.value = []
-      const doc = ref({})
+      // 下面这两句和const doc = ref({})是有区别的
+      const doc = ref()
+      doc.value = {}
       const modalLoading = ref(false)
       const handleSave = () => {
         modalLoading.value = true
+        // 获取富文本里的内容
+        doc.value.content = editor.txt.html()
         axios.post("/doc/save", doc.value).then((resp) => {
           modalLoading.value = false
           const data = resp.data
