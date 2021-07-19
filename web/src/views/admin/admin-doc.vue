@@ -25,6 +25,8 @@
             :data-source="level1"
             :loading="loading"
             :pagination="false"
+            v-if="level1.length > 0"
+            :default-expand-all-rows="true"
             size="small"
           >
             <template #name="{ text, record }">
@@ -86,39 +88,6 @@
       </a-row>
     </a-layout-content>
   </a-layout>
-<!--  <a-modal-->
-<!--    title="文档表单"-->
-<!--    v-model:visible="modalVisible"-->
-<!--    :confirm-loading="modalLoading"-->
-<!--    @ok="handleModalOk"-->
-<!--  >-->
-<!--    <a-form :model="doc" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">-->
-<!--      <a-form-item label="名称">-->
-<!--        <a-input v-model:value="doc.name" />-->
-<!--      </a-form-item>-->
-<!--      <a-form-item label="父文档">-->
-<!--        <a-tree-select-->
-<!--          v-model:value="doc.parent"-->
-<!--          style="width: 100%"-->
-<!--          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"-->
-<!--          :tree-data="treeSelectData"-->
-<!--          placeholder="请选择父文档"-->
-<!--          tree-default-expand-all-->
-<!--          :replaceFields="{title: 'name', key: 'id', value: 'id'}"-->
-<!--        >-->
-<!--          <template #title="{ key, value }">-->
-<!--            <span style="color: #08c" v-if="key === '0-0-1'">Child Node1 {{ value }}</span>-->
-<!--          </template>-->
-<!--        </a-tree-select>-->
-<!--      </a-form-item>-->
-<!--      <a-form-item label="顺序">-->
-<!--        <a-input v-model:value="doc.sort" />-->
-<!--      </a-form-item>-->
-<!--      <a-form-item label="顺序">-->
-<!--        <div id="content"></div>-->
-<!--      </a-form-item>-->
-<!--    </a-form>-->
-<!--  </a-modal>-->
 </template>
 
 <script lang="ts">
@@ -159,6 +128,7 @@
        * 查询所有文档
        **/
       const level1 = ref()
+      level1.value = []
       const handleQuery = () => {
         loading.value = true;
         axios.get("/doc/all").then((resp) => {
