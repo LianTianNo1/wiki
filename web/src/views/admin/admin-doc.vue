@@ -75,6 +75,9 @@
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort" />
       </a-form-item>
+      <a-form-item label="顺序">
+        <div id="content"></div>
+      </a-form-item>
     </a-form>
   </a-modal>
 </template>
@@ -87,10 +90,12 @@
   import {useRoute} from "vue-router";
   import { Modal } from 'ant-design-vue';
   import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+  import E from 'wangeditor'
 
   export default defineComponent({
     name: 'AdminDoc',
     setup() {
+      const editor = new E('#content')
       const param = ref()
       param.value = {}
       const docs = ref();
@@ -221,6 +226,10 @@
         setDisable(treeSelectData.value, record.id)
 
         treeSelectData.value.unshift({id: 0, name: '无'})
+
+        setTimeout(function () {
+          editor.create()
+        }, 50)
       }
 
       /**
@@ -236,6 +245,10 @@
         treeSelectData.value = Tool.copy(level1.value)
 
         treeSelectData.value.unshift({id: 0, name: '无'})
+
+        setTimeout(function () {
+          editor.create()
+        }, 50)
       }
 
       /**
