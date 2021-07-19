@@ -58,21 +58,37 @@
         <a-input v-model:value="doc.name" />
       </a-form-item>
       <a-form-item label="父文档">
-        <a-select
+        <a-tree-select
           v-model:value="doc.parent"
-          ref="select"
+          style="width: 100%"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :tree-data="treeSelectData"
+          placeholder="请选择父文档"
+          tree-default-expand-all
+          :replaceFields="{title: 'name', key: 'id', value: 'id'}"
+          :disabled="doc.id === id"
         >
-          <a-select-option value="0">
-            无
-          </a-select-option>
-          <a-select-option v-for="c in level1"
-                           :key="c.id"
-                           :value="c.id"
-                           :disabled="doc.id === c.id">
-            {{c.name}}
-          </a-select-option>
-        </a-select>
+          <template #title="{ key, value }">
+            <span style="color: #08c" v-if="key === '0-0-1'">Child Node1 {{ value }}</span>
+          </template>
+        </a-tree-select>
       </a-form-item>
+<!--      <a-form-item label="父文档">-->
+<!--        <a-select-->
+<!--          v-model:value="doc.parent"-->
+<!--          ref="select"-->
+<!--        >-->
+<!--          <a-select-option value="0">-->
+<!--            无-->
+<!--          </a-select-option>-->
+<!--          <a-select-option v-for="c in level1"-->
+<!--                           :key="c.id"-->
+<!--                           :value="c.id"-->
+<!--                           :disabled="doc.id === c.id">-->
+<!--            {{c.name}}-->
+<!--          </a-select-option>-->
+<!--        </a-select>-->
+<!--      </a-form-item>-->
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort" />
       </a-form-item>
@@ -135,6 +151,9 @@
       }
 
       // ---------- 表单 -----------
+      // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
+      const treeSelectData = ref()
+      treeSelectData.value = []
       const doc = ref({})
       const modalVisible = ref(false)
       const modalLoading = ref(false)
@@ -154,12 +173,38 @@
         });
       }
 
+      const setDisable = (treeSelectData: any, id: any) => {
+        for (let i = 0; i < treeSelectData.length; i++) {
+          const node = treeSelectData[i]
+          if (node.id === id) {
+            node.disabled = true
+
+            const children = node.children
+            if (Tool.isNotEmpty(children)) {
+              for (let j = 0; j < children.length; j++) {
+                setDisable(children, children[j].id)
+              }
+            }
+          } else {
+            const children = node.children
+            if (Tool.isNotEmpty(children)) {
+              setDisable(children, id)
+            }
+          }
+        }
+      }
+
       /**
        * 编辑
        */
       const edit = (record: any) => {
         modalVisible.value = true
         doc.value = Tool.copy(record)
+
+        treeSelectData.value = Tool.copy(level1.value)
+        setDisable(treeSelectData.value, record.id)
+
+        treeSelectData.value.unshift({id: 0, name: '无'})
       }
 
       /**
@@ -168,6 +213,10 @@
       const add = () => {
         modalVisible.value = true
         doc.value = {}
+
+        treeSelectData.value = Tool.copy(level1.value)
+
+        treeSelectData.value.unshift({id: 0, name: '无'})
       }
 
       /**
@@ -198,6 +247,7 @@
         doc,
         modalVisible,
         modalLoading,
+        treeSelectData,
         edit,
         add,
         handleModalOk,
