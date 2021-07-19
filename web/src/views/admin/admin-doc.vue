@@ -66,7 +66,6 @@
           placeholder="请选择父文档"
           tree-default-expand-all
           :replaceFields="{title: 'name', key: 'id', value: 'id'}"
-          :disabled="doc.id === id"
         >
           <template #title="{ key, value }">
             <span style="color: #08c" v-if="key === '0-0-1'">Child Node1 {{ value }}</span>
@@ -101,13 +100,14 @@
   import axios from 'axios';
   import {message} from "ant-design-vue";
   import {Tool} from "@/util/tool";
+  import {useRoute} from "vue-router";
 
   export default defineComponent({
     name: 'AdminDoc',
     setup() {
       const param = ref()
       param.value = {}
-      const categories = ref();
+      const docs = ref();
       const loading = ref(false);
 
       const columns = [
@@ -141,9 +141,9 @@
           loading.value = false;
           const data = resp.data;
           if (data.success) {
-            categories.value = data.content;
+            docs.value = data.content;
             level1.value = []
-            level1.value = Tool.array2Tree(categories.value, 0)
+            level1.value = Tool.array2Tree(docs.value, 0)
           } else {
             message.error(data.message);
           }
@@ -210,9 +210,12 @@
       /**
        * 新增
        */
+      const route = useRoute()
       const add = () => {
         modalVisible.value = true
-        doc.value = {}
+        doc.value = {
+          ebookId: route.query.ebookId
+        }
 
         treeSelectData.value = Tool.copy(level1.value)
 
@@ -237,7 +240,7 @@
       });
 
       return {
-        //categories,
+        //docs,
         level1,
         columns,
         loading,
