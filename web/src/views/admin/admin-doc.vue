@@ -173,6 +173,9 @@
         });
       }
 
+      /**
+       * 将某节点及其子孙节点全部置为disabled
+       */
       const setDisable = (treeSelectData: any, id: any) => {
         for (let i = 0; i < treeSelectData.length; i++) {
           const node = treeSelectData[i]
@@ -189,6 +192,31 @@
             const children = node.children
             if (Tool.isNotEmpty(children)) {
               setDisable(children, id)
+            }
+          }
+        }
+      }
+
+      /**
+       * 查找整根树枝
+       */
+      let ids: Array<string> = []
+      const getDeleteIds = (treeSelectData: any, id: any) => {
+        for (let i = 0; i < treeSelectData.length; i++) {
+          const node = treeSelectData[i]
+          if (node.id === id) {
+            ids.push(node.id)
+
+            const children = node.children
+            if (Tool.isNotEmpty(children)) {
+              for (let j = 0; j < children.length; j++) {
+                getDeleteIds(children, children[j].id)
+              }
+            }
+          } else {
+            const children = node.children
+            if (Tool.isNotEmpty(children)) {
+              getDeleteIds(children, id)
             }
           }
         }
@@ -226,7 +254,9 @@
        * 删除
        */
       const handleDelete = (id: string) => {
-        axios.delete("/ebook/delete/" + id).then((resp) => {
+        getDeleteIds(level1.value, id)
+        // join() 方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串
+        axios.delete("/doc/delete/" + ids.join(",")).then((resp) => {
           const data = resp.data
           if (data.success) {
             // 重新加载列表
