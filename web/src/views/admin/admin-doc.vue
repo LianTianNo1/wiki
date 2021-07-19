@@ -8,12 +8,12 @@
           <p>
             <a-form :model="param" layout="inline">
               <a-form-item>
-                <a-button type="primary" @click="handleQuery()" size="large">
+                <a-button type="primary" @click="handleQuery()">
                   查询
                 </a-button>
               </a-form-item>
               <a-form-item>
-                <a-button type="primary" @click="add()" size="large">
+                <a-button type="primary" @click="add()">
                   新增
                 </a-button>
               </a-form-item>
@@ -61,7 +61,7 @@
           </p>
           <a-form :model="doc" layout="vertical">
             <a-form-item>
-              <a-input v-model:value="doc.name" />
+              <a-input v-model:value="doc.name" placeholder="请输入名称"/>
             </a-form-item>
             <a-form-item>
               <a-tree-select
@@ -73,13 +73,10 @@
                 tree-default-expand-all
                 :replaceFields="{title: 'name', key: 'id', value: 'id'}"
               >
-                <template #title="{ key, value }">
-                  <span style="color: #08c" v-if="key === '0-0-1'">Child Node1 {{ value }}</span>
-                </template>
               </a-tree-select>
             </a-form-item>
             <a-form-item>
-              <a-input v-model:value="doc.sort" />
+              <a-input v-model:value="doc.sort" placeholder="请输入顺序"/>
             </a-form-item>
             <a-form-item>
               <div id="content"></div>
@@ -87,7 +84,6 @@
           </a-form>
         </a-col>
       </a-row>
-
     </a-layout-content>
   </a-layout>
 <!--  <a-modal-->
@@ -144,19 +140,13 @@
       const docs = ref();
       const loading = ref(false);
 
+      editor.config.zIndex = 0
+
       const columns = [
         {
           title: '名称',
-          dataIndex: 'name'
-        },
-        {
-          title: '父文档',
-          key: 'parent',
-          dataIndex: 'parent'
-        },
-        {
-          title: '顺序',
-          dataIndex: 'sort'
+          dataIndex: 'name',
+          slots: { customRender: 'name' }
         },
         {
           title: 'Action',
@@ -189,15 +179,13 @@
       const treeSelectData = ref()
       treeSelectData.value = []
       const doc = ref({})
-      const modalVisible = ref(false)
       const modalLoading = ref(false)
-      const handleModalOk = () => {
+      const handleSave = () => {
         modalLoading.value = true
         axios.post("/doc/save", doc.value).then((resp) => {
           modalLoading.value = false
           const data = resp.data
           if (data.success) {
-            modalVisible.value = false
 
             // 重新加载列表
             handleQuery()
@@ -262,7 +250,6 @@
        * 编辑
        */
       const edit = (record: any) => {
-        modalVisible.value = true
         doc.value = Tool.copy(record)
 
         treeSelectData.value = Tool.copy(level1.value)
@@ -270,9 +257,6 @@
 
         treeSelectData.value.unshift({id: 0, name: '无'})
 
-        setTimeout(function () {
-          editor.create()
-        }, 50)
       }
 
       /**
@@ -280,7 +264,6 @@
        */
       const route = useRoute()
       const add = () => {
-        modalVisible.value = true
         doc.value = {
           ebookId: route.query.ebookId
         }
@@ -288,10 +271,6 @@
         treeSelectData.value = Tool.copy(level1.value)
 
         treeSelectData.value.unshift({id: 0, name: '无'})
-
-        setTimeout(function () {
-          editor.create()
-        }, 50)
       }
 
       /**
@@ -325,7 +304,8 @@
       }
 
       onMounted(() => {
-        handleQuery();
+        handleQuery()
+        editor.create()
       })
 
       return {
@@ -337,12 +317,11 @@
         handleQuery,
 
         doc,
-        modalVisible,
         modalLoading,
         treeSelectData,
         edit,
         add,
-        handleModalOk,
+        handleSave,
         handleDelete,
         showConfirm
       }
