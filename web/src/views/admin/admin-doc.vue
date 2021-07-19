@@ -36,7 +36,7 @@
               title="删除后不可恢复，确认删除？"
               ok-text="是"
               cancel-text="否"
-              @confirm="handleDelete(record.id)"
+              @confirm="showConfirm(record.id)"
             >
               <a-button type="primary" danger>
                 删除
@@ -72,22 +72,6 @@
           </template>
         </a-tree-select>
       </a-form-item>
-<!--      <a-form-item label="父文档">-->
-<!--        <a-select-->
-<!--          v-model:value="doc.parent"-->
-<!--          ref="select"-->
-<!--        >-->
-<!--          <a-select-option value="0">-->
-<!--            无-->
-<!--          </a-select-option>-->
-<!--          <a-select-option v-for="c in level1"-->
-<!--                           :key="c.id"-->
-<!--                           :value="c.id"-->
-<!--                           :disabled="doc.id === c.id">-->
-<!--            {{c.name}}-->
-<!--          </a-select-option>-->
-<!--        </a-select>-->
-<!--      </a-form-item>-->
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort" />
       </a-form-item>
@@ -96,11 +80,13 @@
 </template>
 
 <script lang="ts">
-  import {defineComponent, onMounted, ref} from 'vue';
+  import {defineComponent, onMounted, ref, createVNode} from 'vue';
   import axios from 'axios';
   import {message} from "ant-design-vue";
   import {Tool} from "@/util/tool";
   import {useRoute} from "vue-router";
+  import { Modal } from 'ant-design-vue';
+  import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 
   export default defineComponent({
     name: 'AdminDoc',
@@ -201,11 +187,13 @@
        * 查找整根树枝
        */
       let ids: Array<string> = []
+      let idsName: Array<string> = []
       const getDeleteIds = (treeSelectData: any, id: any) => {
         for (let i = 0; i < treeSelectData.length; i++) {
           const node = treeSelectData[i]
           if (node.id === id) {
             ids.push(node.id)
+            idsName.push(node.name)
 
             const children = node.children
             if (Tool.isNotEmpty(children)) {
@@ -254,7 +242,6 @@
        * 删除
        */
       const handleDelete = (id: string) => {
-        getDeleteIds(level1.value, id)
         // join() 方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串
         axios.delete("/doc/delete/" + ids.join(",")).then((resp) => {
           const data = resp.data
@@ -265,9 +252,25 @@
         })
       }
 
+      const showConfirm = (id: string) => {
+        ids = []
+        idsName = []
+        getDeleteIds(level1.value, id)
+        Modal.confirm({
+          title: '重要提醒',
+          icon: createVNode(ExclamationCircleOutlined),
+          content: '将删除: 【'+ idsName +'】。删除后不可恢复，确认删除？',
+          onOk() {
+            handleDelete(id)
+          },
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onCancel() {},
+        })
+      }
+
       onMounted(() => {
         handleQuery();
-      });
+      })
 
       return {
         //docs,
@@ -284,7 +287,8 @@
         edit,
         add,
         handleModalOk,
-        handleDelete
+        handleDelete,
+        showConfirm
       }
     }
   });
