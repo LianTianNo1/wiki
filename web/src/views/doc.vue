@@ -88,6 +88,7 @@
   }
 </script>
 
+<!--没有加scoped的style是全局的-->
 <style>
   /* wangeditor默认样式， 参照https://www.wangeditor.com/doc/pages/02-%E5%86%85%E5%AE%B9%E5%A4%84%E7%90%86/03-%E8%8E%B7%E5%8F%96html.html */
   .wang-editor table {

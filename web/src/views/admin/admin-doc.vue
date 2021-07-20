@@ -81,11 +81,28 @@
               <a-input v-model:value="doc.sort" placeholder="请输入顺序"/>
             </a-form-item>
             <a-form-item>
+              <a-button type="primary" @click="handlePreviewContent">
+                <EyeOutlined /> 内容预览
+              </a-button>
+            </a-form-item>
+            <a-form-item>
               <div id="content"></div>
             </a-form-item>
           </a-form>
         </a-col>
       </a-row>
+
+      <a-drawer
+        width="900"
+        placement="right"
+        :closable="false"
+        v-model:visible="drawerVisible"
+        @close="onDrawerClose"
+        :after-visible-change="afterVisibleChange"
+      >
+        <div class="wang-editor" :innerHTML="previewHtml"></div>
+      </a-drawer>
+
     </a-layout-content>
   </a-layout>
 </template>
@@ -138,13 +155,16 @@
             docs.value = data.content;
             level1.value = []
             level1.value = Tool.array2Tree(docs.value, 0)
+
+            treeSelectData.value = Tool.copy(level1.value)
+            treeSelectData.value.unshift({id: 0, name: '无'})
           } else {
             message.error(data.message);
           }
         })
       }
 
-      // ---------- 表单 -----------
+      // ---------- 表单 -------------------------------------------
       // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
       const treeSelectData = ref()
       treeSelectData.value = []
@@ -248,7 +268,6 @@
 
         treeSelectData.value = Tool.copy(level1.value)
         setDisable(treeSelectData.value, record.id)
-
         treeSelectData.value.unshift({id: 0, name: '无'})
 
       }
@@ -266,7 +285,6 @@
         }
 
         treeSelectData.value = Tool.copy(level1.value)
-
         treeSelectData.value.unshift({id: 0, name: '无'})
       }
 
@@ -300,6 +318,20 @@
         })
       }
 
+      // ---------- 富文本预览 -------------------------------------------
+      const drawerVisible = ref(false)
+      const previewHtml = ref()
+
+      const handlePreviewContent = () => {
+        const html = editor.txt.html()
+        previewHtml.value = html
+        drawerVisible.value = true
+      }
+
+      const onDrawerClose = () => {
+        drawerVisible.value = false
+      }
+
       onMounted(() => {
         handleQuery()
         editor.create()
@@ -319,7 +351,12 @@
         add,
         handleSave,
         handleDelete,
-        showConfirm
+        showConfirm,
+
+        previewHtml,
+        drawerVisible,
+        handlePreviewContent,
+        onDrawerClose
       }
     }
   });
