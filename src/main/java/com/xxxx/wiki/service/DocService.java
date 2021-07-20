@@ -117,12 +117,23 @@ public class DocService {
     }
 
     /**
-     * 删除
+     * 批量删除
+     * @param ids
      */
     public void delete(List<String> ids) {
         DocExample docExample = new DocExample();
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(ids);
         docMapper.deleteByExample(docExample);
+    }
+
+    /**
+     * 富文本内容查询
+     * @param id
+     * @return
+     */
+    public String findContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        return content.getContent();
     }
 }

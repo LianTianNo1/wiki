@@ -221,10 +221,26 @@
       }
 
       /**
+       * 查询富文本内容
+       **/
+      const handleQueryContent = () => {
+        axios.get("/doc/find-content/" + doc.value.id).then((resp) => {
+          const data = resp.data;
+          if (data.success) {
+            // 渲染富文本内容
+            editor.txt.html(data.content)
+          } else {
+            message.error(data.message);
+          }
+        })
+      }
+
+      /**
        * 编辑
        */
       const edit = (record: any) => {
         doc.value = Tool.copy(record)
+        handleQueryContent()
 
         treeSelectData.value = Tool.copy(level1.value)
         setDisable(treeSelectData.value, record.id)
@@ -250,7 +266,7 @@
       /**
        * 删除
        */
-      const handleDelete = (id: string) => {
+      const handleDelete = () => {
         // join() 方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串
         axios.delete("/doc/delete/" + ids.join(",")).then((resp) => {
           const data = resp.data
@@ -270,7 +286,7 @@
           icon: createVNode(ExclamationCircleOutlined),
           content: '将删除: 【'+ idsName +'】。删除后不可恢复，确认删除？',
           onOk() {
-            handleDelete(id)
+            handleDelete()
           },
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           onCancel() {},
