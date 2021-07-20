@@ -11,6 +11,7 @@
             @select="onSelect"
             :replace-fields="{title: 'name', key: 'id', value: 'id'}"
             :default-expand-all="true"
+            :defaultSelectedKeys="defaultSelectedKeys"
           >
           </a-tree>
         </a-col>
@@ -34,6 +35,8 @@
     setup() {
       const route = useRoute()
       const docs = ref()
+      const defaultSelectedKeys = ref()
+      defaultSelectedKeys.value = []
 
       /**
        * 查询所有文档
@@ -47,6 +50,12 @@
             docs.value = data.content;
             level1.value = []
             level1.value = Tool.array2Tree(docs.value, 0)
+
+            if (Tool.isNotEmpty(level1)) {
+              // 把节点设置成选中状态，但是并不会调用onSelect方法，所以要自己手动查询
+              defaultSelectedKeys.value = [level1.value[0].id]
+              handleQueryContent(defaultSelectedKeys.value)
+            }
           } else {
             message.error(data.message);
           }
@@ -82,6 +91,7 @@
       return {
         level1,
         html,
+        defaultSelectedKeys,
         onSelect
       }
     }
