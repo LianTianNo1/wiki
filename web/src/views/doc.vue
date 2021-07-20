@@ -116,6 +116,14 @@
     background-color: #f1f1f1;
   }
 
+  /* blockquote 样式 */
+  .wang-editor blockquote p{
+    font-family: "YouYuan";
+    margin: 20px 10px !important;
+    font-size: 16px !important;
+    font-weight: 600;
+  }
+
   /* code 样式 */
   .wang-editor code {
     display: inline-block;
