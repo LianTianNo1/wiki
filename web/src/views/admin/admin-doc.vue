@@ -151,16 +151,17 @@
       // 下面这两句和const doc = ref({})是有区别的
       const doc = ref()
       doc.value = {}
-      const modalLoading = ref(false)
+
+      /**
+       * 保存
+       */
       const handleSave = () => {
-        modalLoading.value = true
         // 获取富文本里的内容
         doc.value.content = editor.txt.html()
         axios.post("/doc/save", doc.value).then((resp) => {
-          modalLoading.value = false
           const data = resp.data
           if (data.success) {
-
+            message.success("保存成功！")
             // 重新加载列表
             handleQuery()
           } else {
@@ -239,6 +240,9 @@
        * 编辑
        */
       const edit = (record: any) => {
+        // 清空富文本内容
+        editor.txt.html("")
+
         doc.value = Tool.copy(record)
         handleQueryContent()
 
@@ -254,6 +258,9 @@
        */
       const route = useRoute()
       const add = () => {
+        // 清空富文本内容
+        editor.txt.html("")
+
         doc.value = {
           ebookId: route.query.ebookId
         }
@@ -307,7 +314,6 @@
         handleQuery,
 
         doc,
-        modalLoading,
         treeSelectData,
         edit,
         add,
