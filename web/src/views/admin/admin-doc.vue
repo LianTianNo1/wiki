@@ -124,7 +124,8 @@
       const param = ref()
       param.value = {}
       const docs = ref();
-      const loading = ref(false);
+      const loading = ref(false)
+      const route = useRoute()
 
       editor.config.zIndex = 0
 
@@ -170,7 +171,10 @@
       treeSelectData.value = []
       // 下面这两句和const doc = ref({})是有区别的
       const doc = ref()
-      doc.value = {}
+      //  初始化doc里的ebookId
+      doc.value = {
+        ebookId: route.query.ebookId
+      }
 
       /**
        * 保存
@@ -275,7 +279,6 @@
       /**
        * 新增
        */
-      const route = useRoute()
       const add = () => {
         // 清空富文本内容
         editor.txt.html("")
