@@ -131,7 +131,7 @@
       level1.value = []
       const handleQuery = () => {
         loading.value = true;
-        axios.get("/doc/all").then((resp) => {
+        axios.get("/doc/all/" + route.query.ebookId).then((resp) => {
           loading.value = false;
           const data = resp.data;
           if (data.success) {

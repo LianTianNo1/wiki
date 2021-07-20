@@ -15,14 +15,14 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
-
+          <div class="wang-editor" :innerHTML="html"></div>
         </a-col>
       </a-row>
     </a-layout-content>
   </a-layout>
 </template>
 
-<script>
+<script lang="ts">
   import {useRoute} from "vue-router";
   import {defineComponent, onMounted, ref} from 'vue';
   import axios from 'axios'
@@ -53,17 +53,85 @@
         })
       }
 
+      /**
+       * 查询富文本内容
+       **/
+      const html = ref()
+      const handleQueryContent = (id: string) => {
+        axios.get("/doc/find-content/" + id).then((resp) => {
+          const data = resp.data;
+          if (data.success) {
+            // 渲染富文本内容
+            html.value = data.content
+          } else {
+            message.error(data.message);
+          }
+        })
+      }
+
+      const onSelect = (selectedKeys: any, info: any) => {
+        if (Tool.isNotEmpty(selectedKeys)) {
+          handleQueryContent(selectedKeys[0])
+        }
+      }
+
       onMounted(() => {
         handleQuery()
       })
 
       return {
-        level1
+        level1,
+        html,
+        onSelect
       }
     }
   }
 </script>
 
-<style scoped>
+<style>
+  /* wangeditor默认样式， 参照https://www.wangeditor.com/doc/pages/02-%E5%86%85%E5%AE%B9%E5%A4%84%E7%90%86/03-%E8%8E%B7%E5%8F%96html.html */
+  .wang-editor table {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+  }
+  .wang-editor table td,
+  .wang-editor table th {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding: 3px 5px;
+  }
+  .wang-editor table th {
+    border-bottom: 2px solid #ccc;
+    text-align: center;
+  }
 
+  /* blockquote 样式 */
+  .wang-editor blockquote {
+    display: block;
+    border-left: 8px solid #d0e5f2;
+    padding: 5px 10px;
+    margin: 10px 0;
+    line-height: 1.4;
+    font-size: 100%;
+    background-color: #f1f1f1;
+  }
+
+  /* code 样式 */
+  .wang-editor code {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    background-color: #f1f1f1;
+    border-radius: 3px;
+    padding: 3px 5px;
+    margin: 0 3px;
+  }
+  .wang-editor pre code {
+    display: block;
+  }
+
+  /* ul ol 样式 */
+  .wang-editor ul, ol {
+    margin: 10px 0 10px 20px;
+  }
 </style>
