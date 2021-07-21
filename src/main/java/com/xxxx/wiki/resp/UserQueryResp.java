@@ -3,16 +3,15 @@ package com.xxxx.wiki.resp;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
-public class CategoryQueryResp {
+public class UserQueryResp {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long parent;
+    private String loginName;
 
     private String name;
 
-    private Integer sort;
+    private String password;
 
     public Long getId() {
         return id;
@@ -22,12 +21,12 @@ public class CategoryQueryResp {
         this.id = id;
     }
 
-    public Long getParent() {
-        return parent;
+    public String getLoginName() {
+        return loginName;
     }
 
-    public void setParent(Long parent) {
-        this.parent = parent;
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
     }
 
     public String getName() {
@@ -38,12 +37,12 @@ public class CategoryQueryResp {
         this.name = name;
     }
 
-    public Integer getSort() {
-        return sort;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -53,9 +52,9 @@ public class CategoryQueryResp {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", parent=").append(parent);
+        sb.append(", loginName=").append(loginName);
         sb.append(", name=").append(name);
-        sb.append(", sort=").append(sort);
+        sb.append(", password=").append(password);
         sb.append("]");
         return sb.toString();
     }

@@ -25,6 +25,8 @@
                         connectionURL="jdbc:mysql://localhost:3306/wiki?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai"
                         userId="root"
                         password="WANG95255">
+            <!-- 在 MySQL 8.0 以上的版本中，在生成 User 表的实体类时，Mybatis Generator 会找到多张 User 表，包括 MySQL information schemas 中的多张 User 表，生成了多个 User 相关的实体类。 -->
+            <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
 
         <!-- domain类的位置 -->
@@ -44,8 +46,8 @@
 <!--        <table tableName="ebook"/>-->
 <!--        <table tableName="category"/>-->
 <!--        <table tableName="doc"/>-->
-        <table tableName="content"/>
-        <!--<table tableName="user"/>-->
+<!--        <table tableName="content"/>-->
+        <table tableName="user"/>
 <!--        <table tableName="ebook_snapshot"/>-->
     </context>
 </generatorConfiguration>
