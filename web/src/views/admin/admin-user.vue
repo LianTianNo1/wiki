@@ -55,10 +55,10 @@
     @ok="handleModalOk"
   >
     <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-      <a-form-item label="登录名">
+      <a-form-item label="用户名">
         <a-input v-model:value="user.loginName" />
       </a-form-item>
-      <a-form-item label="名称">
+      <a-form-item label="昵称">
         <a-input v-model:value="user.name" />
       </a-form-item>
       <a-form-item label="密码">
@@ -89,11 +89,11 @@
 
       const columns = [
         {
-          title: '登录名',
+          title: '用户名',
           dataIndex: 'loginName',
         },
         {
-          title: '名称',
+          title: '昵称',
           dataIndex: 'name'
         },
         {
