@@ -74,6 +74,10 @@
   import {message} from "ant-design-vue";
   import {Tool} from "@/util/tool";
 
+  // 告诉程序这两个值是存在的，因为使用的是ts，否则会报错
+  declare let hexMd5: any
+  declare let KEY: any
+
   export default defineComponent({
     name: 'AdminUser',
     setup() {
@@ -149,6 +153,11 @@
       const modalVisible = ref(false)
       const modalLoading = ref(false)
       const handleModalOk = () => {
+        modalLoading.value = true
+
+        // 对表单的明文密码进行加密，该方法在public/js/md5.js，然后在public/index.html中引入
+        user.value.password = hexMd5(user.value.password + KEY)
+
         axios.post("/user/save", user.value).then((resp) => {
           modalLoading.value = false
           const data = resp.data

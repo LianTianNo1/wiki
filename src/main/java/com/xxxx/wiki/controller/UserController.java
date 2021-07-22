@@ -6,6 +6,7 @@ import com.xxxx.wiki.resp.CommonResp;
 import com.xxxx.wiki.resp.UserQueryResp;
 import com.xxxx.wiki.resp.PageResp;
 import com.xxxx.wiki.service.UserService;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +33,8 @@ public class UserController {
 
     @PostMapping("/save")
     public CommonResp save(@RequestBody @Valid UserSaveReq req) {
+        //  对明文密码进行加密
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         userService.save(req);
         CommonResp resp = new CommonResp<>();
         return resp;
