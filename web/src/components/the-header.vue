@@ -53,11 +53,14 @@
     :confirm-loading="loginModalLoading"
     @ok="login"
   >
-    <a-form :model="loginUser" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+    <a-form :model="loginUser"
+            :rules="rules"
+            :label-col="{ span: 6 }"
+            :wrapper-col="{ span: 18 }">
       <a-form-item label="登录名">
         <a-input v-model:value="loginUser.loginName" />
       </a-form-item>
-      <a-form-item label="密码">
+      <a-form-item label="密码" name="password">
         <a-input v-model:value="loginUser.password" type="password"/>
       </a-form-item>
     </a-form>
@@ -89,6 +92,14 @@
 
       const loginModalVisible = ref(false)
       const loginModalLoading = ref(false)
+
+      //  校验规则
+      const rules = ref({
+        password: [
+          { required: true, message: '请输入 密码', trigger: 'blur' },
+          { min: 4, max: 16, message: '密码长度在4到16个字符之间', trigger: 'blur' },
+        ]
+      })
 
       /**
        * 登录
@@ -137,6 +148,7 @@
         loginUser,
         loginModalVisible,
         loginModalLoading,
+        rules,
         login,
         showLoginModal,
         logout
