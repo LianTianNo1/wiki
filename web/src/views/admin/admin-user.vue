@@ -30,6 +30,9 @@
       >
         <template v-slot:action="{ text, record }">
           <a-space size="small">
+            <a-button type="primary" @click="resetPassword(record)">
+              重置密码
+            </a-button>
             <a-button type="primary" @click="edit(record)">
               编辑
             </a-button>
@@ -48,8 +51,9 @@
       </a-table>
     </a-layout-content>
   </a-layout>
+
   <a-modal
-    title="用户信息"
+    title="用户表单"
     v-model:visible="modalVisible"
     :confirm-loading="modalLoading"
     @ok="handleModalOk"
@@ -62,6 +66,19 @@
         <a-input v-model:value="user.name" />
       </a-form-item>
       <a-form-item label="密码" v-show="!user.id">
+        <a-input v-model:value="user.password" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+
+  <a-modal
+    title="重置密码"
+    v-model:visible="resetPasswordModalVisible"
+    :confirm-loading="resetPasswordModalLoading"
+    @ok="handleResetPasswordModalOk"
+  >
+    <a-form :model="user" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <a-form-item label="新密码">
         <a-input v-model:value="user.password" />
       </a-form-item>
     </a-form>
@@ -208,6 +225,43 @@
         })
       }
 
+      // ---------- 重置密码表单 -----------
+
+      const resetPasswordModalVisible = ref(false)
+      const resetPasswordModalLoading = ref(false)
+      const handleResetPasswordModalOk = () => {
+        resetPasswordModalLoading.value = true
+
+        // 对表单的明文密码进行加密，该方法在public/js/md5.js，然后在public/index.html中引入
+        user.value.password = hexMd5(user.value.password + KEY)
+
+        axios.post("/user/reset-password", user.value).then((resp) => {
+          resetPasswordModalLoading.value = false
+          const data = resp.data
+          if (data.success) {
+            resetPasswordModalVisible.value = false
+
+            // 重新加载列表
+            handleQuery({
+              page: pagination.value.current,
+              size: pagination.value.pageSize
+            })
+          } else {
+            message.error(data.message)
+          }
+        });
+      }
+
+      /**
+       * 编辑
+       */
+      const resetPassword = (record: any) => {
+        resetPasswordModalVisible.value = true
+        user.value = Tool.copy(record)
+        user.value.password = null
+      }
+
+
       onMounted(() => {
         handleQuery({
             page: 1,
@@ -231,6 +285,11 @@
         add,
         handleModalOk,
         handleDelete,
+
+        resetPasswordModalVisible,
+        resetPasswordModalLoading,
+        handleResetPasswordModalOk,
+        resetPassword
       }
     }
   });

@@ -8,6 +8,7 @@ import com.xxxx.wiki.exception.BusinessException;
 import com.xxxx.wiki.exception.BusinessExceptionCode;
 import com.xxxx.wiki.mapper.UserMapper;
 import com.xxxx.wiki.req.UserQueryReq;
+import com.xxxx.wiki.req.UserResetPasswordReq;
 import com.xxxx.wiki.req.UserSaveReq;
 import com.xxxx.wiki.resp.UserQueryResp;
 import com.xxxx.wiki.resp.PageResp;
@@ -116,5 +117,14 @@ public class UserService {
         } else {
             return userList.get(0);
         }
+    }
+
+    /**
+     * 重置密码
+     * @param req
+     */
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }
