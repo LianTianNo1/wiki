@@ -1,4 +1,4 @@
-GET http://localhost:8880/ebook/list?page=0&size=1000
+GET http://localhost:8880/redis/set/1111/test
 
 ###
 
@@ -6,5 +6,9 @@ POST http://localhost:8880/ebook/save
 Content-Type: application/json
 
 {}
+
+###
+
+GET http://localhost:8880/redis/get/1111
 
 ###
