@@ -77,7 +77,18 @@
        * 登录
        */
       const login = () => {
-
+        loginModalLoading.value = true
+        loginUser.value.password = hexMd5(loginUser.value.password + KEY)
+        axios.post('user/login', loginUser.value).then((resp) => {
+          loginModalLoading.value = false
+          const data = resp.data
+          if (data.success) {
+            loginModalVisible.value = false
+            message.success("登录成功！")
+          } else {
+            message.error(data.message)
+          }
+        })
       }
 
       /**
