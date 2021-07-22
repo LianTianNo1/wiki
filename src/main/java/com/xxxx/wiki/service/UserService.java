@@ -85,7 +85,10 @@ public class UserService {
             }
         } else {
             // 更新
-            userMapper.updateByPrimaryKey(user);
+            //  禁止更改用户名
+            user.setLoginName(null);
+            //  加上Selective只会更新有值的字段
+            userMapper.updateByPrimaryKeySelective(user);
         }
     }
 
@@ -97,6 +100,11 @@ public class UserService {
         userMapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 查询用户名是否已经存在
+     * @param LoginName
+     * @return
+     */
     private User selectByLoginName(String LoginName) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
