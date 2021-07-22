@@ -86,7 +86,7 @@ public class UserController {
         userLoginResp.setToken(token.toString());
         //  将token放入redis
         //  存入redis的类需要实现序列化 或者 JSONObject.toJSONString()
-        redisTemplate.opsForValue().set(token, JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 3600 * 24, TimeUnit.SECONDS);
 
         CommonResp<UserLoginResp> resp = new CommonResp<>();
         resp.setContent(userLoginResp);
