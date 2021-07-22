@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-  import {defineComponent, onMounted, ref} from 'vue';
+  import {defineComponent, onMounted, ref, computed} from 'vue';
   import axios from 'axios';
   import {message} from "ant-design-vue";
   import {Tool} from "@/util/tool";
@@ -72,10 +72,8 @@
         loginName: 'test',
         password: 'test'
       })
-      //  用于保存登录后的获取的信息
-      const user = ref()
-      //  防止空指针异常
-      user.value = {}
+      //  用于保存登录后的获取的信息, computed会监听store的变化
+      const user = computed(() => store.state.user)
 
       // ---------- 登录表单 -----------
 
@@ -93,8 +91,7 @@
           const data = resp.data
           if (data.success) {
             loginModalVisible.value = false
-            user.value = data.content
-            store.commit('setUser', user.value)
+            store.commit('setUser', data.content)
             message.success("登录成功！")
           } else {
             message.error(data.message)
