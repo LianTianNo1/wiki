@@ -27,8 +27,11 @@
         </a-menu>
       </a-col>
       <a-col :span="4">
-        <a class="login-menu" @click="showLoginModal">
+        <a v-show="!user.id" @click="showLoginModal">
           <span>登录</span>
+        </a>
+        <a v-show="!!user.id">
+          <span>你好： {{user.name}} </span>
         </a>
       </a-col>
     </a-row>
@@ -56,6 +59,7 @@
   import axios from 'axios';
   import {message} from "ant-design-vue";
   import {Tool} from "@/util/tool";
+  import store from "@/store";
 
   declare let hexMd5: any
   declare let KEY: any
@@ -63,10 +67,15 @@
   export default defineComponent({
     name: 'the-header',
     setup() {
+      //  用于提交登录信息
       const loginUser = ref({
         loginName: 'test',
         password: 'test'
       })
+      //  用于保存登录后的获取的信息
+      const user = ref()
+      //  防止空指针异常
+      user.value = {}
 
       // ---------- 登录表单 -----------
 
@@ -84,6 +93,8 @@
           const data = resp.data
           if (data.success) {
             loginModalVisible.value = false
+            user.value = data.content
+            store.commit('setUser', user.value)
             message.success("登录成功！")
           } else {
             message.error(data.message)
@@ -99,6 +110,7 @@
       }
 
       return {
+        user,
         loginUser,
         loginModalVisible,
         loginModalLoading,
