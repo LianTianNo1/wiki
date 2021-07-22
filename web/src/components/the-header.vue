@@ -27,12 +27,22 @@
         </a-menu>
       </a-col>
       <a-col :span="4">
-        <a v-show="!user.id" @click="showLoginModal">
+        <a v-show="!!user.id" style="padding-right: 20px;color: white">
+          <span>你好：{{user.name}} </span>
+        </a>
+        <a v-show="!user.id" @click="showLoginModal" style="color: white">
           <span>登录</span>
         </a>
-        <a v-show="!!user.id">
-          <span>你好： {{user.name}} </span>
-        </a>
+        <a-popconfirm
+          title="是否确认退出登录？"
+          ok-text="是"
+          cancel-text="否"
+          @confirm="logout"
+        >
+          <a v-show="!!user.id" style="color: white">
+            <span>退出登录</span>
+          </a>
+        </a-popconfirm>
       </a-col>
     </a-row>
   </a-layout-header>
@@ -106,13 +116,30 @@
         loginModalVisible.value = true
       }
 
+      /**
+       * 退出登录
+       */
+      const logout = () => {
+        axios.get('user/logout/' + user.value.token).then((resp) => {
+          const data = resp.data
+          if (data.success) {
+            message.success("退出登录成功！")
+            // 为了避免空指针异常，所以用空对象
+            store.commit('setUser', {})
+          } else {
+            message.error(data.message)
+          }
+        })
+      }
+
       return {
         user,
         loginUser,
         loginModalVisible,
         loginModalLoading,
         login,
-        showLoginModal
+        showLoginModal,
+        logout
       }
     }
   });
