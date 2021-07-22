@@ -85,8 +85,9 @@ public class UserService {
             }
         } else {
             // 更新
-            //  禁止更改用户名
+            //  禁止更改用户名,密码
             user.setLoginName(null);
+            user.setPassword(null);
             //  加上Selective只会更新有值的字段
             userMapper.updateByPrimaryKeySelective(user);
         }
