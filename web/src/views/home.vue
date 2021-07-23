@@ -125,7 +125,6 @@
 
       return {
         ebooks,
-        actions,
 
         level1,
         handleQueryCategory,
