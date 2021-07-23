@@ -149,4 +149,12 @@ public class DocService {
         }
         return content.getContent();
     }
+
+    /**
+     * 点赞
+     * @param id
+     */
+    public void vote(Long id) {
+        docMapperCust.increaseVoteCount(id);
+    }
 }
