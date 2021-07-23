@@ -17,6 +17,14 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
+          <div>
+            <h2>{{doc.name}}</h2>
+            <div>
+              <span>阅读数: {{doc.viewCount}}</span> &nbsp; &nbsp;
+              <span>点赞数: {{doc.voteCount}}</span>
+            </div>
+            <a-divider style="height: 2px; background-color: #9999cc" />
+          </div>
           <div class="wang-editor" :innerHTML="html"></div>
         </a-col>
       </a-row>
@@ -38,6 +46,9 @@
       const docs = ref()
       const defaultSelectedKeys = ref()
       defaultSelectedKeys.value = []
+      //  当前选中的文档
+      const doc = ref()
+      doc.value = {}
 
       /**
        * 查询所有文档
@@ -56,6 +67,8 @@
               // 把节点设置成选中状态，但是并不会调用onSelect方法，所以要自己手动查询
               defaultSelectedKeys.value = [level1.value[0].id]
               handleQueryContent(defaultSelectedKeys.value)
+              //  初始显示文档信息
+              doc.value = level1.value[0]
             }
           } else {
             message.error(data.message);
@@ -81,6 +94,9 @@
 
       const onSelect = (selectedKeys: any, info: any) => {
         if (Tool.isNotEmpty(selectedKeys)) {
+          //  选中某一节点时，加载该节点的文档信息
+          doc.value = info.selectedNodes[0].props;
+          //  加载内容
           handleQueryContent(selectedKeys[0])
         }
       }
@@ -93,6 +109,7 @@
         level1,
         html,
         defaultSelectedKeys,
+        doc,
         onSelect
       }
     }
