@@ -170,4 +170,11 @@ public class DocService {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
     }
+
+    /**
+     * 更新电子书信息
+     */
+    public void updateEbookInfo()  {
+        docMapperCust.updateEbookInfo();
+    }
 }
