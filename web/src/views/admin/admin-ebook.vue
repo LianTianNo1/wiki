@@ -206,7 +206,6 @@
        * 表格点击页码时触发
        */
       const handleTableChange = (pagination: any) => {
-        console.log("看看自带的分页参数都有啥：" + pagination);
         handleQuery({
           page: pagination.current,
           size: pagination.pageSize
