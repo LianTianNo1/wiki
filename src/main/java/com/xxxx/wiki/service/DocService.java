@@ -46,6 +46,9 @@ public class DocService {
     private ContentMapper contentMapper;
 
     @Resource
+    private WsService wsService;
+
+    @Resource
     private RedisUtil redisUtil;
 
     @Resource
@@ -176,8 +179,10 @@ public class DocService {
 
         // 推送消息
         Doc docDB = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo("【" + docDB.getName() + "】被点赞！");
+        wsService.sendInfo("【" + docDB.getName() + "】被点赞！");
     }
+
+
 
     /**
      * 更新电子书信息
