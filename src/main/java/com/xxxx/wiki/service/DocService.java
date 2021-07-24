@@ -18,6 +18,7 @@ import com.xxxx.wiki.util.CopyUtil;
 import com.xxxx.wiki.util.RedisUtil;
 import com.xxxx.wiki.util.RequestContext;
 import com.xxxx.wiki.util.SnowFlake;
+import com.xxxx.wiki.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private WebSocketServer webSocketServer;
 
     /**
      * 查询全部
@@ -169,6 +173,10 @@ public class DocService {
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
+
+        // 推送消息
+        Doc docDB = docMapper.selectByPrimaryKey(id);
+        webSocketServer.sendInfo("【" + docDB.getName() + "】被点赞！");
     }
 
     /**
