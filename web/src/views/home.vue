@@ -149,8 +149,8 @@
     margin: 5px 0;
   }
 
-  .welcome {
-    margin-left: 35%;
-    margin-top: 5%;
-  }
+  /*.welcome {*/
+  /*  margin-left: 35%;*/
+  /*  margin-top: 5%;*/
+  /*}*/
 </style>

@@ -21,6 +21,7 @@
     </update>
 
     <!-- 获取首页数值数据：总阅读数、总点赞数、今日阅读数、今日点赞数、今日预计阅读数、今日预计阅读增长 -->
+    <!-- 只获取昨天和今天，两天的数据 -->
     <select id="getStatistic" resultType="com.xxxx.wiki.resp.StatisticResp">
         select
             t1.`date` as `date`,
