@@ -12,10 +12,11 @@
         </a-menu-item>
         <a-sub-menu v-for="item in level1" :key="item.id">
           <template v-slot:title>
-            <span><user-putlined/>{{item.name}}</span>
+            <FolderOpenOutlined />
+            <span>  {{item.name}}</span>
           </template>
           <a-menu-item v-for="child in item.children" :key="child.id">
-            <MailOutlined/>
+            <FileOutlined />
             <span>{{child.name}}</span>
           </a-menu-item>
         </a-sub-menu>
