@@ -87,12 +87,20 @@
         </a-card>
       </a-col>
     </a-row>
+    <br>
+    <a-row>
+      <a-col :span="24">
+        <div id="main" style="width: 100%;height: 300px;"></div>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
 <script lang="ts">
   import {defineComponent, onMounted, ref} from 'vue';
   import axios from 'axios';
+
+  declare let echarts: any
 
   export default defineComponent({
     name: 'the-welcome',
