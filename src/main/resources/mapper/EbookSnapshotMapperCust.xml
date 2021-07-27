@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxxx.wiki.mapper.EbookSnapshotMapperCust">
+
+    <update id="genSnapshot">
+        INSERT INTO ebook_snapshot(ebook_id, `date`, view_count, vote_count, view_increase, vote_increase)
+        SELECT t1.id, CURDATE(), 0, 0, 0, 0 FROM ebook t1
+        WHERE NOT EXISTS(SELECT 1 FROM ebook_snapshot t2 WHERE t1.id = t2.ebook_id AND t2.`date` = CURDATE());
+
+        UPDATE ebook_snapshot t1, ebook t2
+        SET t1.view_count = t2.view_count, t1.vote_count = t2.vote_count
+        WHERE t1.`date` = CURDATE() AND t1.ebook_id = t2.id;
+
+        UPDATE ebook_snapshot t1 LEFT JOIN (SELECT t1.ebook_id, view_count, vote_count FROM ebook_snapshot t1
+        WHERE t1.`date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) t2
+        ON t1.ebook_id = t2.ebook_id
+        SET t1.view_increase = (t1.view_count - IFNULL(t2.view_count, 0)),
+            t1.vote_increase = (t1.vote_count - IFNULL(t2.vote_count, 0))
+        WHERE t1.`date` = CURDATE();
+    </update>
+
+</mapper>
