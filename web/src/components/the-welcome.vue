@@ -133,8 +133,87 @@
         })
       }
 
+      //------------------------ echarts图形展示 ------------------------
+      const get30DayStatistic = () => {
+        axios.get('/ebook-snapshot/get-30-statistic').then((response) => {
+          const data = response.data
+          if (data.success) {
+            const statisticList = data.content
+
+            init30DayEcharts(statisticList)
+          }
+        })
+      }
+
+      const init30DayEcharts = (list: any) => {
+        // 基于准备好的dom，初始化echarts实例
+        const myChart = echarts.init(document.getElementById('main'))
+
+        //  横轴坐标
+        const xAxis = []
+        //  纵轴数据
+        const seriesView = []
+        const seriesVote = []
+        for (let i = 0; i < list.length; i++) {
+          const record = list[i]
+          xAxis.push(record.date)
+          seriesView.push(record.viewIncrease)
+          seriesVote.push(record.voteIncrease)
+        }
+
+        // 指定图表的配置项和数据
+        const option = {
+          title: {
+            text: '30天趋势图'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['总阅读量', '总点赞量']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxis
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              name: '总阅读量',
+              type: 'line',
+              data: seriesView,
+              smooth: true
+            },
+            {
+              name: '总点赞量',
+              type: 'line',
+              data: seriesVote,
+              smooth: true
+            }
+          ]
+        }
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option)
+      }
+
       onMounted(() => {
         getStatistic()
+        get30DayStatistic()
       })
 
       return {
