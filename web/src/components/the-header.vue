@@ -1,6 +1,6 @@
 <template>
   <a-layout-header class="header">
-    <div class="logo"/>
+    <div class="logo">Wzzzy's 知识库</div>
     <a-row type="flex">
       <a-col :span="20">
         <a-menu
@@ -158,4 +158,13 @@
 </script>
 
 <style>
+  .logo {
+    width: 140px;
+    height: 31px;
+    /*background: rgba(255, 255, 255, 0.2);*/
+    /*margin: 16px 28px 16px 0;*/
+    float: left;
+    color: white;
+    font-size: 18px;
+  }
 </style>
