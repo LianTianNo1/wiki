@@ -25,7 +25,7 @@
       :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
       <div class="welcome" v-if="isShowWelcome">
-        <h1>Welcome to Wzzzy's Wiki !!!</h1>
+        <the-welcome></the-welcome>
       </div>
       <a-list v-else
               item-layout="vertical"
@@ -70,9 +70,13 @@
   import axios from 'axios'
   import {Tool} from "@/util/tool";
   import {message} from "ant-design-vue";
+  import TheWelcome from '@/components/the-welcome.vue'
 
   export default defineComponent({
     name: 'Home',
+    components: {
+      TheWelcome
+    },
     setup() {
       const ebooks = ref()
 
