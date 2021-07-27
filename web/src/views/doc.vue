@@ -196,6 +196,11 @@
   .wang-editor ul, ol {
     margin: 10px 0 10px 20px;
   }
+  /* 图片自适应 */
+  .wang-editor img {
+    max-width: 100%;
+    height: auto;
+  }
 
   .vote-div {
     padding: 15px;
