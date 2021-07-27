@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xxxx.wiki.mapper.EbookSnapshotMapperCust">
 
+<!--    先插入当天数据，如果已插入则更新，然后将昨天的数据做参考生成今天的增长数据-->
     <update id="genSnapshot">
         INSERT INTO ebook_snapshot(ebook_id, `date`, view_count, vote_count, view_increase, vote_increase)
         SELECT t1.id, CURDATE(), 0, 0, 0, 0 FROM ebook t1
@@ -18,5 +19,23 @@
             t1.vote_increase = (t1.vote_count - IFNULL(t2.vote_count, 0))
         WHERE t1.`date` = CURDATE();
     </update>
+
+    <!-- 获取首页数值数据：总阅读数、总点赞数、今日阅读数、今日点赞数、今日预计阅读数、今日预计阅读增长 -->
+    <select id="getStatistic" resultType="com.xxxx.wiki.resp.StatisticResp">
+        select
+            t1.`date` as `date`,
+            sum(t1.view_count) as viewCount,
+            sum(t1.vote_count) as voteCount,
+            sum(t1.view_increase) as viewIncrease,
+            sum(t1.vote_increase) as voteIncrease
+        from
+            ebook_snapshot t1
+        where
+            t1.`date` >= date_sub(curdate(), interval 1 day)
+        group by
+            t1.`date`
+        order by
+            t1.`date` asc;
+    </select>
 
 </mapper>

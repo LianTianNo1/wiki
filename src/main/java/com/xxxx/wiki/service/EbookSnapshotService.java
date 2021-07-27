@@ -1,9 +1,11 @@
 package com.xxxx.wiki.service;
 
 import com.xxxx.wiki.mapper.EbookSnapshotMapperCust;
+import com.xxxx.wiki.resp.StatisticResp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by stfu
@@ -17,5 +19,9 @@ public class EbookSnapshotService {
 
     public void genSnapshot() {
         ebookSnapshotMapperCust.genSnapshot();
+    }
+
+    public List<StatisticResp> getStatistic() {
+        return ebookSnapshotMapperCust.getStatistic();
     }
 }
