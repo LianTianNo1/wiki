@@ -19,7 +19,7 @@
               </a-statistic>
             </a-col>
             <a-col :span="8">
-              <a-statistic title="点赞率" :value="statistic.voteCount / statistic.viewCount * 100"
+              <a-statistic title="点赞率" :value="statistic.viewCount ? statistic.voteCount / statistic.viewCount * 100 : 0"
                            :value-style="{color: '#cf1322'}"
                            suffix="%"
                            :precision="2">
@@ -111,7 +111,7 @@
       const getStatistic = () => {
         axios.get('/ebook-snapshot/get-statistic').then((resp) => {
           const data = resp.data
-          if (data.success) {
+          if (data.success && data.content[1]) {
             const statisticResp = data.content
             statistic.value.viewCount = statisticResp[1].viewCount
             statistic.value.voteCount = statisticResp[1].voteCount
