@@ -35,7 +35,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <scope>8.0.22</scope>
+            <version>8.0.22</version>
         </dependency>
         <!-- mybatis 依赖-->
         <dependency>
