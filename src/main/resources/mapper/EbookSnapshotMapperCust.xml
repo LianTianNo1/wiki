@@ -4,24 +4,31 @@
 
 <!--    先插入当天数据，如果已插入则更新，然后将昨天的数据做参考生成今天的增长数据-->
     <update id="genSnapshot">
-        INSERT INTO ebook_snapshot(ebook_id, `date`, view_count, vote_count, view_increase, vote_increase)
-        SELECT t1.id, CURDATE(), 0, 0, 0, 0 FROM ebook t1
-        WHERE NOT EXISTS(SELECT 1 FROM ebook_snapshot t2 WHERE t1.id = t2.ebook_id AND t2.`date` = CURDATE());
+        insert into ebook_snapshot(ebook_id, `date`, view_count, vote_count, view_increase, vote_increase)
+        select t1.id, curdate(), 0, 0, 0, 0
+        from ebook t1
+        where not exists(select 1
+                         from ebook_snapshot t2
+                         where t1.id = t2.ebook_id
+                           and t2.`date` = curdate());
 
-        UPDATE ebook_snapshot t1, ebook t2
-        SET t1.view_count = t2.view_count, t1.vote_count = t2.vote_count
-        WHERE t1.`date` = CURDATE() AND t1.ebook_id = t2.id;
+        update ebook_snapshot t1, ebook t2
+        set t1.view_count = t2.view_count,
+            t1.vote_count = t2.vote_count
+        where t1.`date` = curdate()
+          and t1.ebook_id = t2.id;
 
-        UPDATE ebook_snapshot t1 LEFT JOIN (SELECT t1.ebook_id, view_count, vote_count FROM ebook_snapshot t1
-        WHERE t1.`date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) t2
-        ON t1.ebook_id = t2.ebook_id
-        SET t1.view_increase = (t1.view_count - IFNULL(t2.view_count, 0)),
-            t1.vote_increase = (t1.vote_count - IFNULL(t2.vote_count, 0))
-        WHERE t1.`date` = CURDATE();
+        update ebook_snapshot t1 left join (select ebook_id, view_count, vote_count
+                                            from ebook_snapshot
+                                            where `date` = date_sub(curdate(), interval 1 day)) t2
+            on t1.ebook_id = t2.ebook_id
+        set t1.view_increase = (t1.view_count - ifnull(t2.view_count, 0)),
+            t1.vote_increase = (t1.vote_count - ifnull(t2.vote_count, 0))
+        where t1.`date` = curdate();
     </update>
 
-    <!-- 获取首页数值数据：总阅读数、总点赞数、今日阅读数、今日点赞数、今日预计阅读数、今日预计阅读增长 -->
-    <!-- 只获取昨天和今天，两天的数据 -->
+    <!-- 获取首页数值数据：总阅读数、总点赞数、今日阅读增长数、今日点赞增长数 -->
+    <!-- 只获取昨天和今天，两天的数据, 返回一个长度为2的数组 -->
     <select id="getStatistic" resultType="com.xxxx.wiki.resp.StatisticResp">
         select
             t1.`date` as `date`,

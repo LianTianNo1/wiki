@@ -108,6 +108,9 @@
       const statistic = ref()
       statistic.value = {}
 
+      /**
+       * ebook-snapshot/get-statistic从后端获取一个长度为2的数组, 包含昨天resp.data.content[0]和今天resp.data.content[1]的数据
+       */
       const getStatistic = () => {
         axios.get('/ebook-snapshot/get-statistic').then((resp) => {
           const data = resp.data
@@ -122,7 +125,7 @@
             const now = new Date()
             const nowRate = (now.getHours() * 60 + now.getMinutes()) / (24 * 60)
             //  todayViewIncrease: 预计今日阅读
-            //  todayViewIncreaseRate: 预计今日阅读率: (今天预计 - 昨天阅读数) - 昨天阅读数
+            //  todayViewIncreaseRate: 预计今日阅读率: (今天预计 - 昨天阅读数) / 昨天阅读数
             //  todayViewIncreaseRateAbs: 预计今日阅读增长
             statistic.value.todayViewIncrease = parseInt(String(statisticResp[1].viewIncrease / nowRate))
             statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - statisticResp[0].viewIncrease)

@@ -10,6 +10,7 @@
         update doc set vote_count = vote_count + 1 where id = #{id}
     </update>
 
+    <!--  count(1)的作用，就是统计在分组中，每一组对应的行数或项数  -->
     <update id="updateEbookInfo">
         update
         ebook t1,
