@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("com.xxxx.wiki.mapper")
 @EnableScheduling // 开启定时任务
 @EnableAsync // 开启异步化
+@EnableDiscoveryClient
 public class WikiApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(WikiApplication.class);
